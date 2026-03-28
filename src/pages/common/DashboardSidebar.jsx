@@ -62,17 +62,17 @@ const DashboardSidebar = ({ isOpen, onClose }) => {
 
   const navLinkClass = ({ isActive }) =>
     [
-      "group flex items-center gap-3 rounded-2xl px-4 py-3.5 text-sm transition-colors duration-200",
+      "group flex items-center gap-3 rounded-lg px-3.5 py-2.5 text-sm transition-colors duration-150",
       isActive
-        ? "bg-gradient-to-r from-emerald-50 to-green-50 text-emerald-800 ring-1 ring-emerald-200 shadow-sm"
-        : "text-gray-600 hover:bg-emerald-50/70 hover:text-gray-900",
+        ? "bg-emerald-100 text-emerald-900 font-medium"
+        : "text-gray-600 hover:bg-gray-100 hover:text-gray-900",
     ].join(" ");
 
   return (
     <>
       {/* Mobile Overlay */}
       <div
-        className={`fixed inset-0 z-30 bg-slate-900/40 backdrop-blur-[1.5px] transition-opacity duration-300 lg:hidden ${
+        className={`fixed inset-0 z-30 bg-black/30 transition-opacity duration-200 lg:hidden ${
           isOpen ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
         onClick={onClose}
@@ -81,7 +81,7 @@ const DashboardSidebar = ({ isOpen, onClose }) => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-16 z-40 h-[calc(100vh-64px)] w-72 overflow-y-auto border-r border-emerald-100 bg-white/95 backdrop-blur-md transition-transform duration-300 ease-out will-change-transform lg:sticky lg:top-16 lg:z-20 lg:h-[calc(100vh-64px)] lg:translate-x-0 ${
+        className={`fixed left-0 top-16 z-40 h-[calc(100vh-64px)] w-72 overflow-y-auto border-r border-gray-200 bg-gray-50 transition-transform duration-250 ease-out will-change-transform lg:sticky lg:top-16 lg:z-20 lg:h-[calc(100vh-64px)] lg:translate-x-0 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -89,7 +89,7 @@ const DashboardSidebar = ({ isOpen, onClose }) => {
           {/* Close button for mobile */}
           <button
             onClick={onClose}
-            className="absolute right-4 top-4 rounded-xl border border-transparent p-2 text-gray-500 transition-colors duration-200 hover:border-emerald-100 hover:bg-emerald-50 hover:text-emerald-700 lg:hidden"
+            className="absolute right-3 top-3 rounded-lg p-1.5 text-gray-500 transition-colors duration-150 hover:bg-gray-200 hover:text-gray-700 lg:hidden"
             aria-label="Close sidebar"
             type="button"
           >
@@ -109,24 +109,24 @@ const DashboardSidebar = ({ isOpen, onClose }) => {
           </button>
 
           {/* Brand / Header */}
-          <div className="border-b border-emerald-100 px-5 pb-4 pt-5">
+          <div className="border-b border-gray-200 px-5 pb-3 pt-4">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-lg font-bold text-white shadow-[0_8px_18px_rgba(16,185,129,0.22)]">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 text-base font-bold text-white shadow-md">
                 Z
               </div>
               <div className="min-w-0">
-                <h2 className="truncate text-sm font-bold text-gray-900">
-                  Student Dashboard
+                <h2 className="truncate text-sm font-semibold text-gray-900">
+                  Student Portal
                 </h2>
-                <p className="truncate text-xs font-medium text-emerald-700">
-                  Lost &amp; Found Portal
+                <p className="truncate text-xs text-gray-500">
+                  Lost &amp; Found
                 </p>
               </div>
             </div>
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 space-y-1.5 px-4 py-4">
+          <nav className="flex-1 space-y-1 px-3 py-4">
             {menuItems.map((item) => {
               const Icon = item.icon;
 
@@ -140,22 +140,22 @@ const DashboardSidebar = ({ isOpen, onClose }) => {
                   {({ isActive }) => (
                     <>
                       <div
-                        className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl transition-colors duration-200 ${
+                        className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg transition-colors duration-150 ${
                           isActive
-                            ? "bg-emerald-100 text-emerald-700"
-                            : "bg-gray-100 text-gray-500 group-hover:bg-emerald-100 group-hover:text-emerald-700"
+                            ? "bg-emerald-200 text-emerald-700"
+                            : "text-gray-500 group-hover:text-emerald-600"
                         }`}
                       >
-                        <Icon className="h-[17px] w-[17px]" />
+                        <Icon className="h-4 w-4" />
                       </div>
 
                       <div className="min-w-0 flex-1">
-                        <div className="truncate font-semibold leading-5">
+                        <div className="truncate text-sm font-medium leading-5">
                           {item.label}
                         </div>
                         <div
-                          className={`truncate text-xs leading-5 ${
-                            isActive ? "text-emerald-700/80" : "text-gray-500"
+                          className={`truncate text-xs leading-4 ${
+                            isActive ? "text-emerald-700/70" : "text-gray-500"
                           }`}
                         >
                           {item.description}
@@ -169,18 +169,18 @@ const DashboardSidebar = ({ isOpen, onClose }) => {
           </nav>
 
           {/* Bottom Section */}
-          <div className="border-t border-emerald-100 p-4">
+          <div className="border-t border-gray-200 bg-white p-3.5">
             <Link
               to="/contact"
-              className="group flex items-center gap-3 rounded-2xl bg-gradient-to-r from-emerald-50 to-green-50 px-4 py-3 text-sm font-semibold text-emerald-800 ring-1 ring-emerald-100 transition-colors duration-200 hover:from-emerald-100 hover:to-green-100"
+              className="group flex items-center gap-3 rounded-lg bg-emerald-50 px-3 py-2.5 text-sm font-medium text-emerald-800 transition-colors duration-150 hover:bg-emerald-100"
               onClick={onClose}
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-emerald-700 shadow-sm">
-                <FaLifeRing className="h-[17px] w-[17px]" />
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-emerald-600 flex-shrink-0">
+                <FaLifeRing className="h-4 w-4" />
               </div>
               <div className="min-w-0">
-                <div>Help &amp; Support</div>
-                <div className="text-xs font-medium text-emerald-700/80 leading-5">
+                <div className="truncate">Help &amp; Support</div>
+                <div className="text-xs text-emerald-700/70 leading-4 truncate">
                   Contact our team
                 </div>
               </div>

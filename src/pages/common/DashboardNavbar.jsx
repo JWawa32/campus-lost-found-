@@ -63,22 +63,22 @@ const DashboardNavbar = ({ onToggleSidebar }) => {
   }, [signOutUser, closeMenu, navigate]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-emerald-100 bg-white/90 backdrop-blur-md shadow-[0_8px_24px_rgba(16,185,129,0.06)]">
+    <header className="sticky top-0 z-40 border-b border-gray-200 bg-white shadow-sm">
       <div className="px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between gap-4">
+        <div className="flex h-16 items-center justify-between gap-6">
           {/* Left side */}
           <div className="flex items-center gap-3 flex-shrink-0">
             <button
               onClick={onToggleSidebar}
-              className="rounded-xl p-2 text-gray-600 transition-colors duration-200 hover:bg-emerald-50 hover:text-emerald-700 lg:hidden"
+              className="rounded-lg p-2 text-gray-500 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-700 lg:hidden"
               aria-label="Toggle sidebar"
               type="button"
             >
               <FaBars className="h-5 w-5" />
             </button>
 
-            <div className="flex items-center gap-2 lg:hidden">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-green-600 shadow-[0_6px_16px_rgba(16,185,129,0.18)]">
+            <div className="hidden lg:flex items-center gap-2.5">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-md">
                 <span className="text-sm font-bold text-white">Z</span>
               </div>
               <span className="text-sm font-semibold text-gray-900">
@@ -87,46 +87,48 @@ const DashboardNavbar = ({ onToggleSidebar }) => {
             </div>
           </div>
 
-          {/* Center quick actions */}
-          <div className="hidden md:flex items-center gap-2">
+          {/* Center quick actions - Hidden on mobile */}
+          <div className="hidden md:flex items-center gap-1.5">
             <Link
               to="/app/dashboard"
-              className="inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-medium text-gray-600 transition-colors duration-200 hover:bg-emerald-50 hover:text-emerald-700"
+              className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900"
             >
               <FaHome className="h-4 w-4" />
-              Dashboard
+              <span>Dashboard</span>
             </Link>
 
             <Link
               to="/app/search"
-              className="inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-medium text-gray-600 transition-colors duration-200 hover:bg-emerald-50 hover:text-emerald-700"
+              className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900"
             >
               <FaSearch className="h-4 w-4" />
-              Search
-            </Link>
-
-            <Link
-              to="/app/post-item"
-              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 px-3.5 py-2 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(16,185,129,0.18)] transition duration-200 hover:brightness-105"
-            >
-              <FaPlus className="h-4 w-4" />
-              Post Item
+              <span>Search</span>
             </Link>
           </div>
 
           {/* Right side */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
+            <Link
+              to="/app/post-item"
+              className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition duration-150 hover:bg-emerald-700 active:bg-emerald-800"
+            >
+              <FaPlus className="h-4 w-4" />
+              <span className="hidden sm:inline">Post Item</span>
+            </Link>
+
             <NotificationsDropdown />
+
+            <div className="w-px h-6 bg-gray-200 mx-1 hidden sm:block" />
 
             <button
               ref={buttonRef}
               onClick={toggleMenu}
-              className="flex items-center gap-2 rounded-xl p-1.5 transition-colors duration-200 hover:bg-emerald-50"
+              className="flex items-center gap-2 rounded-lg p-1 transition-colors duration-150 hover:bg-gray-100"
               aria-label="User menu"
               aria-expanded={isMenuOpen}
               type="button"
             >
-              <div className="h-9 w-9 overflow-hidden rounded-full ring-2 ring-transparent transition duration-200 hover:ring-emerald-300">
+              <div className="h-9 w-9 overflow-hidden rounded-lg ring-1 ring-gray-200 transition duration-150 hover:ring-emerald-400">
                 <img
                   src={user?.photoURL || fallbackAvatar}
                   alt={user?.displayName || "User"}
@@ -136,71 +138,71 @@ const DashboardNavbar = ({ onToggleSidebar }) => {
                 />
               </div>
 
-              <span className="hidden max-w-[120px] truncate text-sm font-medium text-gray-700 sm:inline">
-                {user?.displayName || "Account"}
+              <span className="hidden max-w-[100px] truncate text-sm font-medium text-gray-700 lg:inline">
+                {user?.displayName?.split(" ")[0] || "Account"}
               </span>
             </button>
 
-            {/* Dropdown */}
+            {/* Dropdown Menu */}
             <div
-              className={`absolute right-4 top-16 z-50 w-60 origin-top-right overflow-hidden rounded-2xl border border-emerald-100 bg-white/95 shadow-[0_20px_50px_rgba(15,23,42,0.12)] backdrop-blur-md transition-all duration-200 ${
+              className={`absolute right-4 top-16 z-50 w-56 origin-top-right overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg transition-all duration-150 ${
                 isMenuOpen
                   ? "pointer-events-auto translate-y-0 opacity-100"
-                  : "pointer-events-none -translate-y-2 opacity-0"
+                  : "pointer-events-none -translate-y-1 opacity-0"
               }`}
               ref={menuRef}
             >
-              <div className="border-b border-emerald-100 px-4 py-3">
+              <div className="border-b border-gray-100 px-4 py-3.5">
                 <p className="text-sm font-semibold text-gray-900">
                   {user?.displayName || "User"}
                 </p>
-                <p className="truncate text-xs text-gray-500">{user?.email}</p>
+                <p className="truncate text-xs text-gray-500 mt-0.5">{user?.email}</p>
               </div>
 
-              <div className="p-2">
+              <nav className="px-2 py-2">
                 <Link
                   to="/app/dashboard"
                   onClick={closeMenu}
-                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-gray-700 transition-colors duration-200 hover:bg-emerald-50 hover:text-emerald-700"
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900"
                 >
-                  <FaHome className="h-4 w-4" />
+                  <FaHome className="h-4 w-4 flex-shrink-0" />
                   Dashboard
                 </Link>
 
                 <Link
                   to="/app/profile"
                   onClick={closeMenu}
-                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-gray-700 transition-colors duration-200 hover:bg-emerald-50 hover:text-emerald-700"
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900"
                 >
-                  <FaUser className="h-4 w-4" />
+                  <FaUser className="h-4 w-4 flex-shrink-0" />
                   My Profile
                 </Link>
 
                 {isAdmin && (
                   <>
-                    <div className="my-2 h-px bg-emerald-100" />
+                    <div className="my-2 h-px bg-gray-100" />
                     <Link
                       to="/admin"
                       onClick={closeMenu}
-                      className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-orange-600 transition-colors duration-200 hover:bg-orange-50"
+                      className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-amber-600 transition-colors duration-150 hover:bg-amber-50 hover:text-amber-700"
                     >
-                      <FaShieldAlt className="h-4 w-4" />
+                      <FaShieldAlt className="h-4 w-4 flex-shrink-0" />
                       Admin Panel
                     </Link>
                   </>
                 )}
 
-                <div className="my-2 h-px bg-emerald-100" />
+                <div className="my-2 h-px bg-gray-100" />
 
                 <button
                   onClick={handleSignOut}
-                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-red-600 transition-colors duration-200 hover:bg-red-50"
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-red-600 transition-colors duration-150 hover:bg-red-50 hover:text-red-700"
                   type="button"
                 >
-                  <FaSignOutAlt className="h-4 w-4" />
+                  <FaSignOutAlt className="h-4 w-4 flex-shrink-0" />
                   Sign Out
                 </button>
-              </div>
+              </nav>
             </div>
           </div>
         </div>
