@@ -15,20 +15,16 @@ const Signin = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    // Effect: Redirect after successful authentication
+    // Effect: Redirect after successful authentication (when auth state fully settles)
     useEffect(() => {
-      if (user && !loading && !isLoading) {
+      // Only redirect when auth state is fully settled (loading = false) and user exists
+      // This ensures we don't redirect prematurely during auth state transitions
+      if (user && !loading) {
         const isAdminEmail = schoolConfig.adminEmails.includes(user?.email?.toLowerCase());
         const redirectPath = isAdminEmail ? '/admin' : '/app/dashboard';
-        
-        // Small delay to ensure auth state is fully settled
-        const timer = setTimeout(() => {
-          navigate(redirectPath, { replace: true });
-        }, 100);
-        
-        return () => clearTimeout(timer);
+        navigate(redirectPath, { replace: true });
       }
-    }, [user, loading, isLoading, navigate]);
+    }, [user, loading, navigate]);
 
     const handleSignin = (e) => {
         e.preventDefault();

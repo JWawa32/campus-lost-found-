@@ -25,27 +25,22 @@ const AuthProvider = ({ children }) => {
     const createUser = async (email, password, displayName, photoURL) => {
         setLoading(true);
         try {
-            console.log("[v0] Starting Firebase user creation for:", email);
             // Create Firebase user
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const firebaseUser = userCredential.user;
-            console.log("[v0] Firebase user created successfully:", firebaseUser.uid);
 
             // Update Firebase profile
             await updateProfile(firebaseUser, {
                 displayName: displayName,
                 photoURL: photoURL,
             });
-            console.log("[v0] Firebase profile updated");
 
             // Get Firebase ID token
             const token = await getIdToken(firebaseUser);
-            console.log("[v0] Firebase ID token obtained");
             localStorage.setItem('firebaseToken', token);
 
             // Register user profile in MongoDB
             try {
-                console.log("[v0] Registering user in MongoDB");
                 await axios.post(`${API_URL}/auth/register`, {
                     email: firebaseUser.email,
                     displayName: displayName,
@@ -56,16 +51,17 @@ const AuthProvider = ({ children }) => {
                         'Content-Type': 'application/json',
                     },
                 });
-                console.log("[v0] MongoDB registration successful");
             } catch (mongoErr) {
-                console.warn('[v0] MongoDB registration warning:', mongoErr.response?.status === 409 ? 'User already exists' : mongoErr.message);
                 // Don't fail if user already exists in MongoDB
+                if (mongoErr.response?.status !== 409) {
+                    console.error('MongoDB registration error:', mongoErr.message);
+                }
             }
 
             setLoading(false);
             return firebaseUser;
         } catch (error) {
-            console.error('[v0] Firebase user creation error:', error.code, error.message);
+            console.error('Firebase user creation error:', error.code, error.message);
             setLoading(false);
             throw error;
         }
@@ -75,17 +71,13 @@ const AuthProvider = ({ children }) => {
     const singInUser = async (email, password) => {
         setLoading(true);
         try {
-            console.log("[v0] Firebase sign-in attempt for:", email);
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            console.log("[v0] Firebase sign-in successful for user:", userCredential.user.email);
             const token = await getIdToken(userCredential.user);
-            console.log("[v0] Firebase token obtained successfully");
             localStorage.setItem('firebaseToken', token);
             setLoading(false);
             return userCredential;
         } catch (error) {
-            console.error('[v0] Firebase sign-in error code:', error.code);
-            console.error('[v0] Firebase sign-in error message:', error.message);
+            console.error('Firebase sign-in error:', error.code, error.message);
             setLoading(false);
             throw error;
         }
@@ -112,18 +104,14 @@ const AuthProvider = ({ children }) => {
         let userCredential = null;
         
         try {
-            console.log("[v0] Attempting Google Sign-In with popup");
             userCredential = await signInWithPopup(auth, googleProvider);
             const firebaseUser = userCredential.user;
-            console.log("[v0] Google Sign-In successful for user:", firebaseUser.email);
             
             const token = await getIdToken(firebaseUser);
-            console.log("[v0] Firebase token obtained for Google user");
             localStorage.setItem('firebaseToken', token);
 
             // Sync Google user profile to MongoDB
             try {
-                console.log("[v0] Syncing Google user to MongoDB");
                 await axios.post(`${API_URL}/auth/register`, {
                     email: firebaseUser.email,
                     displayName: firebaseUser.displayName,
@@ -134,19 +122,20 @@ const AuthProvider = ({ children }) => {
                         'Content-Type': 'application/json',
                     },
                 });
-                console.log("[v0] MongoDB sync successful");
             } catch (mongoErr) {
-                console.warn('[v0] MongoDB sync warning (user may already exist):', mongoErr.response?.status === 409 ? 'User already exists' : mongoErr.message);
                 // Continue even if sync fails - user is authenticated in Firebase
+                if (mongoErr.response?.status !== 409) {
+                    console.error('MongoDB sync error:', mongoErr.message);
+                }
             }
 
             setLoading(false);
             return userCredential;
         } catch (error) {
-            console.error('[v0] Google Sign-In error:', error.code, error.message);
+            console.error('Google Sign-In error:', error.code, error.message);
             setLoading(false);
             
-            // Re-throw with more context
+            // Provide user-friendly error messages
             const errorMap = {
                 'auth/popup-blocked': 'Popup was blocked by your browser. Please check your popup blocker settings.',
                 'auth/popup-closed-by-user': 'Sign-in was cancelled.',
@@ -170,16 +159,13 @@ const AuthProvider = ({ children }) => {
 
     // Monitor Firebase authentication state
     useEffect(() => {
-        console.log("[v0] AuthProvider mounted - setting up auth state listener");
         const unSubscribe = onAuthStateChanged(auth, async (currentUser) => {
-            console.log("[v0] Auth state changed:", currentUser ? currentUser.email : "No user");
             setUser(currentUser);
             
             if (currentUser?.email) {
                 try {
                     // Get and store Firebase ID token
                     const token = await getIdToken(currentUser);
-                    console.log("[v0] Token obtained for user:", currentUser.email);
                     localStorage.setItem('firebaseToken', token);
 
                     // Set axios default header for API requests
@@ -187,17 +173,15 @@ const AuthProvider = ({ children }) => {
 
                     // Determine user role
                     const role = determineUserRole(currentUser.email);
-                    console.log("[v0] User role determined:", role);
                     setUserRole(role);
 
                     setLoading(false);
                 } catch (err) {
-                    console.error('[v0] Token retrieval error:', err);
+                    console.error('Token retrieval error:', err.message);
                     setLoading(false);
                 }
             } else {
                 // Clear data on logout
-                console.log("[v0] Clearing auth data");
                 setUserRole(null);
                 localStorage.removeItem('firebaseToken');
                 delete axios.defaults.headers.common['Authorization'];
@@ -206,7 +190,6 @@ const AuthProvider = ({ children }) => {
         });
 
         return () => {
-            console.log("[v0] Cleaning up auth state listener");
             unSubscribe();
         };
     }, []);

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from '../../context/Authcontext/AuthContext';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
@@ -10,10 +10,25 @@ import { Helmet } from 'react-helmet-async';
 import { schoolConfig } from '../../config/schoolConfig';
 
 const AdminLogin = () => {
-    const { singInUser, signInWithGoogle } = useContext(AuthContext);
+    const { singInUser, signInWithGoogle, user, loading } = useContext(AuthContext);
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+
+    // Effect: Redirect after successful authentication (when auth state fully settles)
+    useEffect(() => {
+      // Only redirect when auth state is fully settled (loading = false) and user exists
+      if (user && !loading) {
+        const isAdminEmail = schoolConfig.adminEmails.includes(user?.email?.toLowerCase());
+        // If they're not an admin, redirect to student dashboard
+        if (!isAdminEmail) {
+          navigate('/app/dashboard', { replace: true });
+        } else {
+          // Admin user - they'll be redirected by AuthGuard or can navigate manually
+          navigate('/admin', { replace: true });
+        }
+      }
+    }, [user, loading, navigate]);
 
     // Check if email is in admin list
     const isAdminEmail = (email) => {
@@ -35,11 +50,11 @@ const AdminLogin = () => {
         setIsLoading(true);
         singInUser(email, password)
             .then(() => {
-                toast.success('Admin signed in successfully!');
-                navigate('/admin');
-                setIsLoading(false);
+                toast.success('Admin signed in successfully! Redirecting...');
+                // Let useEffect handle redirect when auth state updates
             })
             .catch((error) => {
+                setIsLoading(false);
                 console.error('[v0] Admin signin error code:', error.code);
                 console.error('[v0] Admin signin error message:', error.message);
                 
@@ -56,7 +71,6 @@ const AdminLogin = () => {
                 
                 const userFriendlyMessage = errorMap[error.code] || error.message || "Admin sign in failed. Please try again.";
                 toast.error(userFriendlyMessage);
-                setIsLoading(false);
             });
     };
 
@@ -68,19 +82,18 @@ const AdminLogin = () => {
                 
                 // Check if signed-in user is admin
                 if (!isAdminEmail(userEmail)) {
-                    toast.error('Your account does not have admin privileges');
-                    navigate('/');
-                    return;
+                    toast.error('Your account does not have admin privileges. Redirecting to student dashboard...');
+                    // Let useEffect handle redirect to student dashboard
+                } else {
+                    toast.success('Admin signed in with Google! Redirecting...');
+                    // Let useEffect handle redirect to admin dashboard
                 }
-                
-                toast.success('Admin signed in with Google!');
-                navigate('/admin');
             })
             .catch((error) => {
+                setIsLoading(false);
                 console.error('[v0] Admin Google Sign-In error:', error);
                 toast.error(error.message || "Cannot sign in with Google. Try email/password.");
-            })
-            .finally(() => setIsLoading(false));
+            });
     };
 
     return (
