@@ -128,15 +128,15 @@ const DashboardHome = () => {
   const StatCard = ({ label, value, icon: Icon, accentColor, link }) => (
     <Link
       to={link}
-      className="bg-white p-6 rounded-xl border border-gray-100 transition hover:shadow-md hover:border-gray-200 group"
+      className="bg-white p-6 rounded-lg border border-gray-200 transition-all duration-150 hover:shadow-md hover:border-gray-300 group"
     >
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">{label}</p>
-          <p className={`text-4xl font-bold mt-3 ${accentColor}`}>{value}</p>
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{label}</p>
+          <p className={`text-3xl font-bold mt-2 ${accentColor}`}>{value}</p>
         </div>
-        <div className={`p-3 rounded-lg ${accentColor} opacity-10`}>
-          <Icon className={`w-8 h-8 ${accentColor}`} />
+        <div className={`p-2.5 rounded-lg flex-shrink-0 ${accentColor} opacity-15`}>
+          <Icon className={`w-6 h-6 ${accentColor}`} />
         </div>
       </div>
     </Link>
@@ -149,17 +149,17 @@ const DashboardHome = () => {
       </Helmet>
 
       {/* Welcome Header */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">
-          Welcome back, {user?.displayName || 'Student'}!
+      <div className="mb-10">
+        <h1 className="text-3xl font-bold text-gray-900 mb-1">
+          Welcome back, {user?.displayName?.split(' ')[0] || 'Student'}!
         </h1>
-        <p className="text-gray-600">
+        <p className="text-gray-600 text-sm">
           Here's your campus lost and found activity at a glance.
         </p>
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
         <StatCard
           label="Items Posted"
           value={stats.itemsPosted}
@@ -205,22 +205,22 @@ const DashboardHome = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="mb-10">
+        <h2 className="text-lg font-semibold text-gray-900 mb-5">Quick Actions</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {quickLinks.map((link) => {
             const Icon = link.icon;
             return (
               <Link
                 key={link.path}
                 to={link.path}
-                className="bg-white p-6 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-200 transition group"
+                className="bg-white p-5 rounded-lg border border-gray-200 transition-all duration-150 hover:shadow-md hover:border-gray-300 group"
               >
-                <div className="p-3 rounded-lg bg-emerald-50 w-fit mb-3 group-hover:bg-emerald-100 transition">
-                  <Icon className="w-6 h-6 text-emerald-600" />
+                <div className="p-2.5 rounded-lg bg-emerald-50 w-fit mb-3 group-hover:bg-emerald-100 transition-colors duration-150">
+                  <Icon className="w-5 h-5 text-emerald-600" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-1">{link.title}</h3>
-                <p className="text-sm text-gray-600">{link.description}</p>
+                <h3 className="font-semibold text-gray-900 mb-1 text-sm">{link.title}</h3>
+                <p className="text-xs text-gray-600">{link.description}</p>
               </Link>
             );
           })}
@@ -229,24 +229,24 @@ const DashboardHome = () => {
 
       {/* Recent Activity */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Recent Activity</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-5">Recent Activity</h2>
         {recentActivity.length > 0 ? (
-          <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
             {recentActivity.map((activity, idx) => {
               const Icon = activity.icon;
               return (
                 <div
                   key={idx}
-                  className="flex items-center gap-4 p-5 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition"
+                  className="flex items-center gap-4 px-6 py-4 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors duration-150"
                 >
-                  <div className="p-2.5 rounded-lg bg-emerald-50">
-                    <Icon className="w-5 h-5 text-emerald-600" />
+                  <div className="p-2 rounded-lg bg-emerald-50 flex-shrink-0">
+                    <Icon className="w-4 h-4 text-emerald-600" />
                   </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900">{activity.title}</h3>
-                    <p className="text-sm text-gray-600">{activity.description}</p>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-medium text-gray-900 text-sm">{activity.title}</h3>
+                    <p className="text-xs text-gray-600 mt-0.5">{activity.description}</p>
                   </div>
-                  <span className="text-xs text-gray-500 whitespace-nowrap">
+                  <span className="text-xs text-gray-500 whitespace-nowrap flex-shrink-0">
                     {activity.date ? new Date(activity.date).toLocaleDateString() : 'Recently'}
                   </span>
                 </div>
@@ -254,14 +254,14 @@ const DashboardHome = () => {
             })}
           </div>
         ) : (
-          <div className="bg-white rounded-xl border border-gray-100 p-12 text-center">
-            <div className="p-3 rounded-lg bg-gray-100 w-fit mx-auto mb-4">
-              <FaHistory className="w-12 h-12 text-gray-400 opacity-60" />
+          <div className="bg-white rounded-lg border border-gray-200 p-10 text-center">
+            <div className="p-2 rounded-lg bg-gray-100 w-fit mx-auto mb-3">
+              <FaHistory className="w-10 h-10 text-gray-400 opacity-50" />
             </div>
-            <p className="text-gray-600 mb-4">No recent activity yet. Start by posting or searching for items!</p>
+            <p className="text-gray-600 text-sm mb-4">No recent activity yet. Start by posting or searching for items!</p>
             <Link
               to="/app/search"
-              className="inline-block px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition"
+              className="inline-block px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors duration-150"
             >
               Browse Items
             </Link>
